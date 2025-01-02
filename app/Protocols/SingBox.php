@@ -26,6 +26,7 @@ class SingBox
 
         return response()
             ->json($this->config)
+            ->header('profile-title', 'base64:'. base64_encode($appName))
             ->header('subscription-userinfo', "upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}")
             ->header('profile-update-interval', '24');
     }
@@ -309,6 +310,8 @@ class SingBox
             $array['tag'] = $server['name'];
             $array['type'] = 'hysteria2';
             $array['password'] = $password;
+            $array['up_mbps'] = $user->speed_limit ? min($server['down_mbps'], $user->speed_limit) : $server['down_mbps'];
+            $array['down_mbps'] = $user->speed_limit ? min($server['up_mbps'], $user->speed_limit) : $server['up_mbps'];
 
             if ($server['is_obfs']) {
                 $array['obfs']['type'] = 'salamander';
